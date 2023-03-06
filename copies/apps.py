@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class CopysConfig(AppConfig):
+class CopiesConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "copys"
+    name = "copies"
