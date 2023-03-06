@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     "books",
     "copies",
     "users",
-    "rest-framework",
+    "rest_framework",
     'drf_spectacular'
 ]
 
