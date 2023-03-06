@@ -13,9 +13,9 @@ class UserSerializer(serializers.ModelSerializer):
             "password",
             "first_name",
             "last_name",
-            "is_colaborator"
+            "is_colaborator",
         ]
-        read_only_fields = ["id", "is_colaborator"]
+        read_only_fields = ["id"]
         extra_kwargs = {
             "username": {
                 "validators": [
@@ -30,11 +30,11 @@ class UserSerializer(serializers.ModelSerializer):
                 "validators": [
                     UniqueValidator(
                         queryset=User.objects.all(),
-                        message="A user with that email already exists."
+                        message="A user with that email already exists.",
                     )
-                ]
+                ],
             },
-            "password": {"write_only": True}
+            "password": {"write_only": True},
         }
 
     def create(self, validated_data: dict) -> User:
