@@ -14,7 +14,8 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "is_colaborator",
-            "is_blocked"
+            "is_blocked",
+            "is_follow"
         ]
         read_only_fields = ["id"]
         extra_kwargs = {

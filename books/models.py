@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class Book(models.Model):
     title = models.CharField(max_length=40)
@@ -7,7 +8,6 @@ class Book(models.Model):
 
 
 class Follow(models.Model):
-    is_follow = models.BooleanField(default=False)
     user = models.ForeignKey(
         "users.User", on_delete=models.CASCADE, related_name="follow"
     )
