@@ -15,3 +15,4 @@ class LendingSerializer(serializers.ModelSerializer):
         model = Lending
         fields = ["id", "is_date", "return_date", "user", "copy"]
         read_only_fields = ["id", "user", "copy"]
+
