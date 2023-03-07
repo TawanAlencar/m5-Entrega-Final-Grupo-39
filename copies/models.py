@@ -1,9 +1,12 @@
 from django.db import models
 
+
 # Create your models here.
 class Copy(models.Model):
     is_lending = models.BooleanField(default=False)
-    book = models.ManyToManyField("books.Book", related_name="copies")
+    book = models.ForeignKey(
+        "books.Book", on_delete=models.CASCADE, related_name="copies"
+    )
 
 
 class Lending(models.Model):
