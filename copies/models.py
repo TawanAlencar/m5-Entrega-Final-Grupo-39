@@ -4,6 +4,7 @@ from django.db import models
 # Create your models here.
 class Copy(models.Model):
     is_lending = models.BooleanField(default=False)
+    qtd_book   = models.PositiveIntegerField()
     book = models.ForeignKey(
         "books.Book", on_delete=models.CASCADE, related_name="copies"
     )
