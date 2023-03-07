@@ -7,7 +7,7 @@ import datetime
 class CopySerializer(serializers.ModelSerializer):
     class Meta:
         model = Copy
-        fields = ["id", "is_lending", "book"]
+        fields = ["id", "is_lending", "book","qtd_book"]
         read_only_fields = ["id", "book"]
 
     def create(self, validated_data: dict):
