@@ -29,9 +29,11 @@ class LendingView(ListCreateAPIView):
         )
 
 
-class DestroyLendingView(ListCreateAPIView):
+class DestroyLendingView(DestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsColaboratorOrReadOnly]
 
     queryset = Lending.objects.all()
     serializer_class = LendingSerializer
+
+    lookup_url_kwarg = "copy_id"
