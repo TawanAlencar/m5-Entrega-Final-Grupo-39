@@ -17,7 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
             "is_blocked",
             "is_follow"
         ]
-        read_only_fields = ["id"]
+        read_only_fields = ["id","is_follow"]
         extra_kwargs = {
             "username": {
                 "validators": [
