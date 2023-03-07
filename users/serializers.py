@@ -38,6 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data: dict) -> User:
+        
         if validated_data["is_colaborator"]:
             return User.objects.create_superuser(**validated_data)
         return User.objects.create_user(**validated_data)
