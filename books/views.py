@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.generics import ListCreateAPIView
-from .models import Book, Follow
+from .models import Book,Follow
 from .serializers import BookSerializer, FollowSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.authentication import JWTAuthentication
