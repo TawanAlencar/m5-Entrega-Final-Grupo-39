@@ -4,7 +4,6 @@ from rest_framework.validators import UniqueValidator
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = [
@@ -18,7 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
             "is_blocked",
             "is_follow",
         ]
-        read_only_fields = ["id", "is_follow"]
+        read_only_fields = ["id","is_follow"]
         extra_kwargs = {
             "username": {
                 "validators": [
@@ -39,7 +38,8 @@ class UserSerializer(serializers.ModelSerializer):
             },
             "password": {"write_only": True},
         }
-
+        depth=1
+        
     def create(self, validated_data: dict) -> User:
         if validated_data["is_colaborator"]:
             return User.objects.create_superuser(**validated_data)

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
 from .models import Book, Follow
 from .serializers import BookSerializer, FollowSerializer
 from django.shortcuts import get_object_or_404
@@ -25,3 +25,11 @@ class FollowBook(ListCreateAPIView):
         return serializer.save(
             book_id=self.kwargs.get("book_id"), user_id=self.request.user.id
         )
+    
+class  UnfollowBook(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    queryset = Follow.objects.all()
+    serializer_class = FollowSerializer
+    lookup_url_kwarg = "book_id"

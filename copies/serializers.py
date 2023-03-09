@@ -47,3 +47,5 @@ class LendingSerializer(serializers.ModelSerializer):
             obj.save()
 
         return obj.return_date
+    
+

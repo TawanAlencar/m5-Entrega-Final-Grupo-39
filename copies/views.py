@@ -34,7 +34,7 @@ class LendingView(ListCreateAPIView):
         return serializer.save(
             copy_id=self.kwargs.get("copy_id"), user_id=self.request.user.id
         )
-
+    
 
 class DestroyLendingView(DestroyAPIView):
     authentication_classes = [JWTAuthentication]
@@ -52,3 +52,5 @@ class DestroyLendingView(DestroyAPIView):
         copy.save()
         lending.delete()
         return Response(status=204)
+    
+    
