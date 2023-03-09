@@ -31,7 +31,9 @@ INSTALLED_APPS = [
     "copies",
     "users",
     "rest_framework",
-    'drf_spectacular'
+    'drf_spectacular',
+    "django_apscheduler"
+    
 ]
 
 MIDDLEWARE = [
