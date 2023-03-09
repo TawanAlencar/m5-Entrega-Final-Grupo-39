@@ -25,4 +25,3 @@ class FollowBook(ListCreateAPIView):
         return serializer.save(
             book_id=self.kwargs.get("book_id"), user_id=self.request.user.id
         )
-

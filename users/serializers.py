@@ -1,11 +1,10 @@
 from .models import User
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from books.serializers import FollowSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
-    is_follow = FollowSerializer(read_only=True,many=True)
+
     class Meta:
         model = User
         fields = [
@@ -40,7 +39,6 @@ class UserSerializer(serializers.ModelSerializer):
             },
             "password": {"write_only": True},
         }
-
 
     def create(self, validated_data: dict) -> User:
         if validated_data["is_colaborator"]:

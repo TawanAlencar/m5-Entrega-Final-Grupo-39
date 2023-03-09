@@ -25,11 +25,7 @@ class FollowSerializer(serializers.ModelSerializer):
     book = BookSerializer(read_only=True)
     user = UserSerializer(read_only=True)
 
-
     class Meta:
         model = Follow
-        fields = ["id", "user", "book","book_info"]
-        read_only_fields = ["id", "user", "book","book_info "]
-
-
-    
+        fields = ["id", "user", "book"]
+        read_only_fields = ["id", "user", "book"]
