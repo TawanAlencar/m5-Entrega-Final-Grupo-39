@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView,ListAPIView
 from .models import Book,Follow
 from .serializers import BookSerializer, FollowSerializer
 from django.shortcuts import get_object_or_404
@@ -21,7 +21,7 @@ class FollowBook(ListCreateAPIView):
     serializer_class = FollowSerializer
 
     def perform_create(self, serializer):
-        return serializer.save(book_id=self.kwargs.get("book_id"), user_id=self.request.user.id)
+        return serializer.save(book_id=self.kwargs.get("book_id"),user_id=self.request.user.id)
 
 
     

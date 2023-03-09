@@ -1,9 +1,11 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from .models import User
+from books.serializers import FollowSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
+    is_follow = FollowSerializer(read_only=True,many=True)
     class Meta:
         model = User
         fields = [
@@ -15,9 +17,9 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "is_colaborator",
             "is_blocked",
-            "is_follow"
+            "is_follow",
         ]
-        read_only_fields = ["id","is_follow"]
+        read_only_fields = ["id", "is_follow"]
         extra_kwargs = {
             "username": {
                 "validators": [
@@ -39,8 +41,8 @@ class UserSerializer(serializers.ModelSerializer):
             "password": {"write_only": True},
         }
 
+
     def create(self, validated_data: dict) -> User:
-        
         if validated_data["is_colaborator"]:
             return User.objects.create_superuser(**validated_data)
         return User.objects.create_user(**validated_data)
