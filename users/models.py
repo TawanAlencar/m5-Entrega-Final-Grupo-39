@@ -9,5 +9,4 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50)
     is_colaborator = models.BooleanField(default=False)
     is_blocked = models.BooleanField(default=False)
-    is_follow = models.ManyToManyField('books.Book',through="books.Follow" ,related_name='users')
-    
+

@@ -5,6 +5,9 @@ from django.db import models
 class Book(models.Model):
     title = models.CharField(max_length=40)
     description = models.CharField(max_length=40, null=True)
+    followers = models.ManyToManyField(
+        "users.User", through="books.Follow", related_name="followed_books"
+    )
 
 
 class Follow(models.Model):
