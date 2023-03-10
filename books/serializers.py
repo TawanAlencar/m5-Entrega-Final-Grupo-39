@@ -8,7 +8,8 @@ from rest_framework.validators import UniqueValidator
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields = ["id", "title", "description"]
+        fields = ["id", "title", "description", "followers"]
+        depth = 1
         extra_kwargs = {
             "title": {
                 "validators": [
@@ -28,4 +29,4 @@ class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
         fields = ["id", "user", "book"]
-        read_only_fields = ["id", "user","book"]
+        read_only_fields = ["id", "user", "book"]
