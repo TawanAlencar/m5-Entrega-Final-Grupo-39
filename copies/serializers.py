@@ -17,6 +17,7 @@ class CopySerializer(serializers.ModelSerializer):
 
 class LendingSerializer(serializers.ModelSerializer):
     return_date = serializers.SerializerMethodField()
+    copy = CopySerializer(read_only=True)
 
     class Meta:
         model = Lending
