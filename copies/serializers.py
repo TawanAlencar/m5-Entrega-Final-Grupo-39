@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Copy
 from .models import Lending
+from books.models import Book
 import datetime
 from django.shortcuts import get_object_or_404
 
@@ -8,7 +9,7 @@ from django.shortcuts import get_object_or_404
 class CopySerializer(serializers.ModelSerializer):
     class Meta:
         model = Copy
-        fields = ["id", "is_lending", "book"]
+        fields = ["id", "is_lending", "book", "book_is_avaliable"]
         read_only_fields = ["id", "book"]
 
     def create(self, validated_data: dict):
@@ -48,5 +49,3 @@ class LendingSerializer(serializers.ModelSerializer):
             obj.save()
 
         return obj.return_date
-    
-
