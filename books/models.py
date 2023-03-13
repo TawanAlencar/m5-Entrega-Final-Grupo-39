@@ -8,6 +8,7 @@ class Book(models.Model):
     followers = models.ManyToManyField(
         "users.User", through="books.Follow", related_name="followed_books"
     )
+    is_avaliable = models.BooleanField(default=True)
 
 
 class Follow(models.Model):
@@ -17,4 +18,3 @@ class Follow(models.Model):
     book = models.ForeignKey(
         "books.Book", on_delete=models.CASCADE, related_name="follow"
     )
-

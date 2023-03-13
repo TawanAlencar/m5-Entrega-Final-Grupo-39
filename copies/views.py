@@ -7,6 +7,8 @@ from users.permissions import IsColaboratorOrReadOnly
 from django.shortcuts import get_object_or_404
 from books.models import Book
 from rest_framework.views import Response, Request, APIView
+from django.db.models.signals import post_save, post_delete
+from books.utils import email_send_handler, email_send_handler_delete
 
 # Create your views here.
 
@@ -35,16 +37,17 @@ class LendingView(ListCreateAPIView):
             copy_id=self.kwargs.get("copy_id"), user_id=self.request.user.id
         )
 
+
 class ListLendingStudants(ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsColaboratorOrReadOnly]
 
     def get(self, request: Request, studants_id: int) -> Response:
         lending = Lending.objects.filter(user=studants_id)
-        serializer = LendingSerializer(lending, many=True) 
-        
+        serializer = LendingSerializer(lending, many=True)
+
         return Response(serializer.data, 200)
-    
+
 
 class DestroyLendingView(DestroyAPIView):
     authentication_classes = [JWTAuthentication]
@@ -62,5 +65,7 @@ class DestroyLendingView(DestroyAPIView):
         copy.save()
         lending.delete()
         return Response(status=204)
-    
-    
+
+
+post_save.connect(email_send_handler, sender=Lending)
+post_delete.connect(email_send_handler_delete, sender=Lending)
