@@ -19,13 +19,13 @@ def get_emails(book_id):
 
 def email_send_handler(sender, instance, **kwargs):
     emails = get_emails(instance.copy.book.id)
-    if instance.copy.book.is_available == True:
+    if instance.copy.book.is_avaliable == True:
         email_sending(
             emails,
             f"Atualização sobre {instance.copy.book.title}",
             f"Uma cópia do livro {instance.copy.book.title}, que você está seguindo foi emprestada, mas ainda há outras disponíveis, corra para não perder a chance de lê-lo!",
         )
-    if instance.copy.book.is_available == False:
+    if instance.copy.book.is_avaliable == False:
         email_sending(
             emails,
             f"Atualização sobre {instance.copy.book.title}",

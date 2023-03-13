@@ -10,8 +10,8 @@ class Copy(models.Model):
 
 
 class Lending(models.Model):
-    is_date = models.DateTimeField(auto_now_add=True)
-    return_date = models.DateTimeField(auto_now_add=True)
+    is_date = models.DateField(auto_now_add=True)
+    return_date = models.DateField(auto_now_add=True)
     user = models.ForeignKey(
         "users.User", on_delete=models.CASCADE, related_name="lending"
     )

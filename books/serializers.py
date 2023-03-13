@@ -32,6 +32,7 @@ class BookSerializer(serializers.ModelSerializer):
                 ]
             }
         }
+        depth=1
 
     def get_is_avaliable(self, obj):
         copies = obj.copies.all()
