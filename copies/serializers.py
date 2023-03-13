@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Copy
 from .models import Lending
+from books.models import Book
 import datetime
 from django.shortcuts import get_object_or_404
 
@@ -48,5 +49,3 @@ class LendingSerializer(serializers.ModelSerializer):
             obj.save()
 
         return obj.return_date
-    
-

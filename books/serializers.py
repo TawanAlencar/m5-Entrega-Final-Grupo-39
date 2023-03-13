@@ -3,12 +3,25 @@ from .models import Follow
 from rest_framework import serializers
 from users.serializers import UserSerializer
 from rest_framework.validators import UniqueValidator
+from copies.serializers import CopySerializer
+from django.shortcuts import get_object_or_404
 
 
 class BookSerializer(serializers.ModelSerializer):
+    is_avaliable = serializers.SerializerMethodField()
+    copies = CopySerializer(many=True, read_only=True)
+
     class Meta:
         model = Book
-        fields = ["id", "title", "description", "followers"]
+        fields = [
+            "id",
+            "title",
+            "description",
+            "followers",
+            "is_avaliable",
+            "copies",
+        ]
+
         extra_kwargs = {
             "title": {
                 "validators": [
@@ -19,6 +32,20 @@ class BookSerializer(serializers.ModelSerializer):
                 ]
             }
         }
+
+    def get_is_avaliable(self, obj):
+        copies = obj.copies.all()
+        serializer = CopySerializer(copies, many=True)
+        counter = 0
+
+        for copy in serializer.data:
+            if copy["is_lending"] == False:
+                counter += 1
+
+        if counter > 0:
+            return True
+
+        return False
 
 
 class FollowSerializer(serializers.ModelSerializer):
