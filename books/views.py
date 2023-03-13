@@ -33,3 +33,4 @@ class  UnfollowBook(RetrieveUpdateDestroyAPIView):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
     lookup_url_kwarg = "book_id"
+    
