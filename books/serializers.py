@@ -9,7 +9,6 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ["id", "title", "description", "followers"]
-        depth=1
         extra_kwargs = {
             "title": {
                 "validators": [

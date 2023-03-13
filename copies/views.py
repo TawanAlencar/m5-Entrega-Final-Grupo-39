@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import ListCreateAPIView, DestroyAPIView, ListAPIView
+from rest_framework.serializers import ValidationError
 from .serializers import CopySerializer, LendingSerializer
 from .models import Copy, Lending
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from users.permissions import IsColaboratorOrReadOnly
 from django.shortcuts import get_object_or_404
 from books.models import Book
@@ -25,12 +27,20 @@ class Copyview(ListCreateAPIView):
 
 class LendingView(ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsColaboratorOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     queryset = Lending.objects.all()
     serializer_class = LendingSerializer
 
     def perform_create(self, serializer):
+        user = self.request.user
+        if user.is_blocked == True:
+            raise ValidationError("This user is blocked")
+        """ for lending in Lending.objects.filter(user=user.id):
+            if lending.return_date < lending.is_date:
+                user.is_blocked = True
+                user.save()
+                raise ValidationError("User blocked") """
         return serializer.save(
             copy_id=self.kwargs.get("copy_id"), user_id=self.request.user.id
         )
