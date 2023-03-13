@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 class CopySerializer(serializers.ModelSerializer):
     class Meta:
         model = Copy
-        fields = ["id", "is_lending", "book", "book_is_avaliable"]
+        fields = ["id", "is_lending", "book"]
         read_only_fields = ["id", "book"]
 
     def create(self, validated_data: dict):

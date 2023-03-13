@@ -18,14 +18,9 @@ class BookSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "followers",
-            "is_available",
-            "is_available_aux",
+            "is_avaliable",
             "copies",
         ]
-
-
-        fields = ["id", "title", "description", "followers"]
-
 
         extra_kwargs = {
             "title": {

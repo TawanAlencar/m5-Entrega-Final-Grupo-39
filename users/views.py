@@ -17,3 +17,5 @@ class RetrieveUpdateDestroyUser(RetrieveUpdateDestroyAPIView):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    
