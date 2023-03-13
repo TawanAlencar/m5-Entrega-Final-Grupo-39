@@ -15,9 +15,9 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "is_colaborator",
             "is_blocked",
-            "is_follow",
+            # "is_follow",
         ]
-        read_only_fields = ["id","is_follow"]
+        read_only_fields = ["id"]
         extra_kwargs = {
             "username": {
                 "validators": [
@@ -38,8 +38,8 @@ class UserSerializer(serializers.ModelSerializer):
             },
             "password": {"write_only": True},
         }
-        depth=1
-        
+        depth = 1
+
     def create(self, validated_data: dict) -> User:
         if validated_data["is_colaborator"]:
             return User.objects.create_superuser(**validated_data)

@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.generics import ListCreateAPIView, DestroyAPIView
+from rest_framework.generics import ListCreateAPIView, DestroyAPIView, ListAPIView
 from .serializers import CopySerializer, LendingSerializer
 from .models import Copy, Lending
 from users.permissions import IsColaboratorOrReadOnly
 from django.shortcuts import get_object_or_404
 from books.models import Book
-from rest_framework.views import Response
+from rest_framework.views import Response, Request, APIView
 
 # Create your views here.
 
@@ -34,6 +34,16 @@ class LendingView(ListCreateAPIView):
         return serializer.save(
             copy_id=self.kwargs.get("copy_id"), user_id=self.request.user.id
         )
+
+class ListLendingStudants(ListAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsColaboratorOrReadOnly]
+
+    def get(self, request: Request, studants_id: int) -> Response:
+        lending = Lending.objects.filter(user=studants_id)
+        serializer = LendingSerializer(lending, many=True) 
+        
+        return Response(serializer.data, 200)
     
 
 class DestroyLendingView(DestroyAPIView):

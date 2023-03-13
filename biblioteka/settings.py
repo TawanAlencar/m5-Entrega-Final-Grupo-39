@@ -1,6 +1,8 @@
 from pathlib import Path
 from datetime import timedelta
 import os
+import dj_database_url
+from django.core.management.utils import get_random_secret_key
 import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -8,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 dotenv.load_dotenv()
 # (...)
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv("SECRET_KEY",get_random_secret_key())
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -16,6 +18,12 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = []
+RAILWAY_STATIC_URL = os.getenv("RAILWAY_STATIC_URL")
+
+if RAILWAY_STATIC_URL:
+    # Configuramos o host permitindo que o nosso app Railway se conecte ao server do Django
+    ALLOWED_HOSTS += [RAILWAY_STATIC_URL, "0.0.0.0"]
+
 
 
 # Application definition
@@ -31,9 +39,8 @@ INSTALLED_APPS = [
     "copies",
     "users",
     "rest_framework",
-    'drf_spectacular',
-    "django_apscheduler"
-    
+    "drf_spectacular",
+    "django_apscheduler",
 ]
 
 MIDDLEWARE = [
@@ -44,9 +51,14 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
+DATABASE_URL = os.getenv('DATABASE_URL')
+
 
 ROOT_URLCONF = "biblioteka.urls"
+
 
 TEMPLATES = [
     {
@@ -84,30 +96,39 @@ DATABASES = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-    'AUTHENTICATION_BACKENDS': ('path.to.EmailJWTAuthentication',),
+    "AUTHENTICATION_BACKENDS": ("path.to.EmailJWTAuthentication",),
 }
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 2,
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    'AUTHENTICATION_BACKENDS': (
-        'path.to.EmailJWTAuthentication',
-    ),
+    "AUTHENTICATION_BACKENDS": ("path.to.EmailJWTAuthentication",),
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Your Project API',
-    'DESCRIPTION': 'Your project description',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
+    "TITLE": "Your Project API",
+    "DESCRIPTION": "Your project description",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
     # OTHER SETTINGS
 }
 
+if DATABASE_URL:
+    db_from_env = dj_database_url.config(
+        default=DATABASE_URL, conn_max_age=500, ssl_require=True)
+    DATABASES['default'].update(db_from_env)
+    DEBUG = False
 
+# (...)
+
+# 6. DEVE estar abaixo do código acima
+if not DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -149,3 +170,10 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "users.User"
+
+# EMAIL_BACKEND = "django.core.mail.backends.smpt.EmailBackend"
+EMAIL_USE_TLS = True
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
