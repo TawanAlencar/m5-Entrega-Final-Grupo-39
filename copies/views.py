@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.generics import ListCreateAPIView, DestroyAPIView
+from rest_framework.generics import ListCreateAPIView, DestroyAPIView, ListAPIView
 from .serializers import CopySerializer, LendingSerializer
 from .models import Copy, Lending
 from users.permissions import IsColaboratorOrReadOnly
@@ -35,8 +35,10 @@ class LendingView(ListCreateAPIView):
             copy_id=self.kwargs.get("copy_id"), user_id=self.request.user.id
         )
 
-class ListLendingStudants(APIView):
- 
+class ListLendingStudants(ListAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsColaboratorOrReadOnly]
+
     def get(self, request: Request, studants_id: int) -> Response:
         lending = Lending.objects.filter(user=studants_id)
         serializer = LendingSerializer(lending, many=True) 
