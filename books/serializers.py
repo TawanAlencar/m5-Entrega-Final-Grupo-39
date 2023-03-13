@@ -22,7 +22,11 @@ class BookSerializer(serializers.ModelSerializer):
             "is_available_aux",
             "copies",
         ]
-        depth = 1
+
+
+        fields = ["id", "title", "description", "followers"]
+
+
         extra_kwargs = {
             "title": {
                 "validators": [
