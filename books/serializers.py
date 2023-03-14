@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 
 
 class BookSerializer(serializers.ModelSerializer):
+    followers = UserSerializer(many=True, read_only=True)
     is_avaliable = serializers.SerializerMethodField()
     copies = CopySerializer(many=True, read_only=True)
 
@@ -32,7 +33,6 @@ class BookSerializer(serializers.ModelSerializer):
                 ]
             }
         }
-        depth=1
 
     def get_is_avaliable(self, obj):
         copies = obj.copies.all()

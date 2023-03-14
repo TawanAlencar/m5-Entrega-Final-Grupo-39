@@ -1,19 +1,17 @@
-from django.shortcuts import render
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import ListCreateAPIView, DestroyAPIView, ListAPIView
 from rest_framework.serializers import ValidationError
 from .serializers import CopySerializer, LendingSerializer
 from .models import Copy, Lending
+from users.models import User
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from users.permissions import IsColaboratorOrReadOnly
 from django.shortcuts import get_object_or_404
 from books.models import Book
-from rest_framework.views import Response, Request, APIView
+from rest_framework.views import Response, Request
 from django.db.models.signals import post_save, post_delete
 from books.utils import email_send_handler, email_send_handler_delete
 import datetime
-
-# Create your views here.
 
 
 class Copyview(ListCreateAPIView):
@@ -44,9 +42,7 @@ class LendingView(ListCreateAPIView):
                 user.is_blocked = True
                 user.save()
                 raise ValidationError("User blocked")
-        if Lending.objects.filter(
-            user_id=user.id
-        ) is False:
+        if Lending.objects.filter(user_id=user.id) is False:
             user.is_blocked = False
             user.save()
 
@@ -58,6 +54,7 @@ class LendingView(ListCreateAPIView):
 class ListLendingStudants(ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsColaboratorOrReadOnly]
+    lookup_url_kwarg = "studants_id"
 
     def get(self, request: Request, studants_id: int) -> Response:
         lending = Lending.objects.filter(user=studants_id)
@@ -76,11 +73,22 @@ class DestroyLendingView(DestroyAPIView):
     lookup_url_kwarg = "lending_id"
 
     def delete(self, request, *args, **kwargs):
-        lending = get_object_or_404(Lending, id=self.kwargs.get("lending_id"))
-        copy = get_object_or_404(Copy, id=lending.copy.id)
+        lending_obj = get_object_or_404(Lending, id=self.kwargs.get("lending_id"))
+        copy = get_object_or_404(Copy, id=lending_obj.copy.id)
         copy.is_lending = False
         copy.save()
-        lending.delete()
+        user = get_object_or_404(User, id=lending_obj.user.id)
+        if lending_obj.return_date < datetime.date.today():
+            user.is_blocked = True
+            user.save()
+            lending_obj.is_active = False
+            lending_obj.save()
+            raise ValidationError("User blocked")
+        if Lending.objects.filter(user_id=user.id) is False:
+            user.is_blocked = False
+            user.save()
+        lending_obj.is_active = False
+        lending_obj.save()
         return Response(status=204)
 
 
