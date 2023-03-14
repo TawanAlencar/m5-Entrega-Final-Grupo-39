@@ -11,10 +11,9 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
-
 class ListCreateBook(ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticatedOrReadOnly,IsColaboratorOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsColaboratorOrReadOnly]
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     lookup_url_kwarg = "book_id"
@@ -22,7 +21,7 @@ class ListCreateBook(ListCreateAPIView):
 
 class RetriveUpdateDestroyBook(RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticatedOrReadOnly,IsColaboratorOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsColaboratorOrReadOnly]
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     lookup_url_kwarg = "book_id"
@@ -37,7 +36,9 @@ class FollowBook(ListCreateAPIView):
     lookup_url_kwarg = "book_id"
 
     def perform_create(self, serializer):
-        if Follow.objects.filter(book=self.kwargs.get("book_id"),user_id=self.request.user.id):
+        if Follow.objects.filter(
+            book=self.kwargs.get("book_id"), user_id=self.request.user.id
+        ):
             raise ValidationError("book is already being followed")
         return serializer.save(
             book_id=self.kwargs.get("book_id"), user_id=self.request.user.id
@@ -50,4 +51,4 @@ class UnfollowBook(RetrieveUpdateDestroyAPIView):
 
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
-    lookup_url_kwarg = "book_id"
+    lookup_url_kwarg = "follow_id"
