@@ -22,7 +22,7 @@ class LendingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lending
-        fields = ["id", "is_date", "return_date", "user", "copy"]
+        fields = ["id", "is_date", "return_date", "user", "copy", "is_active"]
         read_only_fields = ["id", "user", "copy"]
 
     def create(self, validated_data: dict):

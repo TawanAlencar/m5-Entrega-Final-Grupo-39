@@ -12,6 +12,7 @@ class Copy(models.Model):
 class Lending(models.Model):
     is_date = models.DateField(auto_now_add=True)
     return_date = models.DateField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
     user = models.ForeignKey(
         "users.User", on_delete=models.CASCADE, related_name="lending"
     )
