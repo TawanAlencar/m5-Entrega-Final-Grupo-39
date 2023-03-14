@@ -19,27 +19,28 @@ def get_emails(book_id):
 
 def email_send_handler(sender, instance, **kwargs):
     emails = get_emails(instance.copy.book.id)
-    if instance.copy.book.is_avaliable == True:
+    book = get_object_or_404(Book, id=instance.copy.book.id)
+    if book.is_avaliable == True:
         email_sending(
             emails,
             f"Atualização sobre {instance.copy.book.title}",
             f"Uma cópia do livro {instance.copy.book.title}, que você está seguindo foi emprestada, mas ainda há outras disponíveis, corra para não perder a chance de lê-lo!",
         )
-    if instance.copy.book.is_avaliable == False:
+    if book.is_avaliable == False:
         email_sending(
             emails,
             f"Atualização sobre {instance.copy.book.title}",
             f"A última cópia do livro {instance.copy.book.title}, que você está seguindo foi emprestada, data de retorno prevista é {instance.return_date}.",
         )
 
+
 def email_send_handler_delete(sender, instance, **kwargs):
     emails = get_emails(instance.copy.book.id)
     email_sending(
         emails,
-            f"Atualização sobre {instance.copy.book.title}",
-            f"Uma cópia do livro {instance.copy.book.title}, que você está seguindo foi devolvida e ele está disponível novamente!"
+        f"Atualização sobre {instance.copy.book.title}",
+        f"Uma cópia do livro {instance.copy.book.title}, que você está seguindo foi devolvida e ele está disponível novamente!",
     )
-
 
 
 def email_sending(email_list, title, body):

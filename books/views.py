@@ -16,10 +16,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 
-
 class ListCreateBook(ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticatedOrReadOnly,IsColaboratorOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsColaboratorOrReadOnly]
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     lookup_url_kwarg = "book_id"
@@ -27,7 +26,7 @@ class ListCreateBook(ListCreateAPIView):
 
 class RetriveUpdateDestroyBook(RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticatedOrReadOnly,IsColaboratorOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsColaboratorOrReadOnly]
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     lookup_url_kwarg = "book_id"
@@ -67,4 +66,4 @@ class UnfollowBook(RetrieveUpdateDestroyAPIView):
 
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
-    lookup_url_kwarg = "book_id"
+    lookup_url_kwarg = "follow_id"
