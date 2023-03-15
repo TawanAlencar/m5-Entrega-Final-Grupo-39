@@ -12,6 +12,7 @@ from rest_framework.views import Response, Request
 from django.db.models.signals import post_save, post_delete
 from books.utils import email_send_handler, email_send_handler_delete
 import datetime
+import time
 
 
 class Copyview(ListCreateAPIView):
@@ -28,24 +29,16 @@ class Copyview(ListCreateAPIView):
 
 class LendingView(ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsColaboratorOrReadOnly]
 
     queryset = Lending.objects.all()
     serializer_class = LendingSerializer
+    lookup_url_kwarg = "studants_id"
 
     def perform_create(self, serializer):
-        user = self.request.user
-        if user.is_blocked == True:
+        user = get_object_or_404(User, id=self.kwargs.get("studants_id"))
+        if user.is_blocked is True:
             raise ValidationError("This user is blocked")
-        for lending in Lending.objects.filter(user_id=user.id):
-            if lending.return_date < datetime.date.today():
-                user.is_blocked = True
-                user.save()
-                raise ValidationError("User blocked")
-        if Lending.objects.filter(user_id=user.id) is False:
-            user.is_blocked = False
-            user.save()
-
         return serializer.save(
             copy_id=self.kwargs.get("copy_id"), user_id=self.request.user.id
         )

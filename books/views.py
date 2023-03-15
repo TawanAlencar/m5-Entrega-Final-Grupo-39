@@ -26,7 +26,7 @@ class ListCreateBook(ListCreateAPIView):
 
 class RetriveUpdateDestroyBook(RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticatedOrReadOnly, IsColaboratorOrReadOnly]
+    permission_classes = [IsColaboratorOrReadOnly]
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     lookup_url_kwarg = "book_id"
@@ -46,15 +46,20 @@ class FollowBook(ListCreateAPIView):
         copy_is_leding = copy_data.last()
         user = get_object_or_404(User, id=self.kwargs.get("user_id"))
         email_user = user.email
-        
-        send_mail('Você seguiu este livro', 
-                  f'Nome do livro: {book.title} \nDescrição: {book.description}\nEmprestado:{copy_is_leding.is_lending}',
-                  settings.EMAIL_HOST_USER, [email_user], 
-                  False)
 
-        if Follow.objects.filter(book=self.kwargs.get("book_id"),user_id=self.request.user.id):
+        send_mail(
+            "Você seguiu este livro",
+            f"Nome do livro: {book.title} \nDescrição: {book.description}\nEmprestado:{copy_is_leding.is_lending}",
+            settings.EMAIL_HOST_USER,
+            [email_user],
+            False,
+        )
+
+        if Follow.objects.filter(
+            book=self.kwargs.get("book_id"), user_id=self.request.user.id
+        ):
             raise ValidationError("book is already being followed")
-       
+
         return serializer.save(
             book_id=self.kwargs.get("book_id"), user_id=self.request.user.id
         )
