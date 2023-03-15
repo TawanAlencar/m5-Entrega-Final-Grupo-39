@@ -42,14 +42,14 @@ class FollowBook(ListCreateAPIView):
 
     def perform_create(self, serializer):
         book = get_object_or_404(Book, id=self.kwargs.get("book_id"))
-        copy_data = Copy.objects.filter(id=self.kwargs.get("book_id"))
-        copy_is_leding = copy_data.last()
-        user = get_object_or_404(User, id=self.kwargs.get("user_id"))
+        # copy_data = Copy.objects.filter(id=self.kwargs.get("book_id"))
+        # copy_is_leding = copy_data.last()
+        user = get_object_or_404(User, id=self.request.user.id)
         email_user = user.email
 
         send_mail(
             "Você seguiu este livro",
-            f"Nome do livro: {book.title} \nDescrição: {book.description}\nEmprestado:{copy_is_leding.is_lending}",
+            f"Nome do livro: {book.title} \nDescrição: {book.description}\nEmprestado",
             settings.EMAIL_HOST_USER,
             [email_user],
             False,
