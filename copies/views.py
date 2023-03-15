@@ -37,11 +37,12 @@ class LendingView(ListCreateAPIView):
 
     def perform_create(self, serializer):
         user = get_object_or_404(User, id=self.kwargs.get("studants_id"))
+        copy = get_object_or_404(Copy, id=self.kwargs.get("copy_id"))
+        if copy.is_lending is True:
+            raise ValidationError("This copy is alredy lending")
         if user.is_blocked is True:
             raise ValidationError("This user is blocked")
-        return serializer.save(
-            copy_id=self.kwargs.get("copy_id"), user_id=self.request.user.id
-        )
+        return serializer.save(copy_id=self.kwargs.get("copy_id"), user_id=user.id)
 
 
 class ListLendingStudants(ListAPIView):
